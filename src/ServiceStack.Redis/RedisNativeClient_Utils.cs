@@ -356,12 +356,12 @@ namespace ServiceStack.Redis
         /// <returns></returns>
         protected void WriteCommandToSendBuffer(params byte[][] cmdWithBinaryArgs)
         {
-            if (Pipeline == null && Transaction == null)
-            {
-                Interlocked.Increment(ref __requestsPerHour);
-                if (__requestsPerHour % 20 == 0)
-                    LicenseUtils.AssertValidUsage(LicenseFeature.Redis, QuotaType.RequestsPerHour, __requestsPerHour);
-            }
+            //if (Pipeline == null && Transaction == null)
+            //{
+            //    Interlocked.Increment(ref __requestsPerHour);
+            //    if (__requestsPerHour % 20 == 0)
+            //        LicenseUtils.AssertValidUsage(LicenseFeature.Redis, QuotaType.RequestsPerHour, __requestsPerHour);
+            //}
 
             if (log.IsDebugEnabled && !RedisConfig.DisableVerboseLogging)
                 CmdLog(cmdWithBinaryArgs);
