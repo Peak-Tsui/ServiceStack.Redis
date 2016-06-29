@@ -36,17 +36,22 @@ namespace ServiceStackDemo
             var client = cacheClient as RedisClient;
             IRedisTypedClient<UserInfoDto> typeClient = client.As<UserInfoDto>();
             typeClient.DeleteAll();
-            IRedisSet<UserInfoDto> set = typeClient.Sets["TestSet"];
+              IRedisSet<UserInfoDto> set = typeClient.Sets["TestSet"];
+            var sortSet = typeClient.SortedSets["TestSet1"];
 
             var list = GetUsers();
 
             set.Clear();
             list.ForEach(x => set.Add(x));
+            list.ForEach(x => sortSet.Add(x));
 
             Console.WriteLine("写入完成");
             Console.ReadLine();
 
-            var item = set.First(t => t.Id == 1);
+            var item = sortSet.Where(t => t.StaffId == "StaffId_7").ToList();
+
+            //var result =  set.GetAll();
+            
             Console.WriteLine(item.ToString());
             Console.ReadLine();
         }
@@ -61,7 +66,9 @@ namespace ServiceStackDemo
             list.Clear();
             listUser.ForEach(t => list.Add(t));
 
-            Console.WriteLine(list.First(t => t.StaffId == "StaffId_8"));
+            var item = list.First(t => t.StaffId == "StaffId_8");
+
+            Console.WriteLine(item);
             Console.ReadLine();
         }
 
@@ -71,13 +78,25 @@ namespace ServiceStackDemo
             var client = cacheClient as RedisClient;
             IRedisTypedClient<UserInfoDto> typeClient = client.As<UserInfoDto>();
 
+            var list = GetUsers();
+
             var hash = client.Hashes["TestHash"];
 
-            Dictionary<string, string>  stringMap = new Dictionary<string, string> {
-                 {"one","a"}, {"two","b"}, {"three","c"}, {"four","d"}
-             };
+
+            Dictionary<string, string> stringMap = new Dictionary<string, string>();
+             //   new Dictionary<string, string> {
+             //    {,"a"}, {"two","b"}, {"three","c"}, {"four","d"}
+             //};
+            foreach (var item in list)
+            {
+                stringMap[item.Id.ToString()] = item.ToString();
+            }
 
             stringMap.ForEach(hash.Add);
+
+
+            //var result = typeClient.GetById('1');
+
         }
 
 
@@ -85,7 +104,7 @@ namespace ServiceStackDemo
         {
             List<UserInfoDto> list = new List<UserInfoDto>();
             DateTime dt = DateTime.Now;
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 list.Add(new UserInfoDto()
                 {

@@ -17,9 +17,9 @@ namespace ServiceStackDemo
 
             //demo.TestSet();
 
-            //demo.TestList();
+            demo.TestList();
 
-            demo.TestHash();
+            //demo.TestHash();
         }
 
     }
